@@ -29,13 +29,20 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
     const event = body.event;
     const payload = body.payload;
 
-    console.log('🔔 Webhook received:', event);
+    console.log('Webhook received:', event);
 
-    const allowedClients = ['client1', 'client2','InstaSnap_Kiosk','client4']; 
+    // --- Webhook Filtering Logic ---
+    const instanceUrl = payload.payment?.entity?.notes?.instanceUrl;
+    if (instanceUrl && instanceUrl !== process.env.BACKEND_INSTANCE_URL) {
+      console.log(`Webhook ignored for instance: ${instanceUrl}`);
+      return res.status(200).json({ success: true, message: 'Webhook ignored for other instance' });
+    }
+
+    const allowedClients = ['InstaSnap_Kioskk']; 
     const paymentClientId = payload.payment?.entity?.notes?.clientId;
 
     if (event === 'payment.captured' && paymentClientId && !allowedClients.includes(paymentClientId)) {
-      console.log(`Ignoring webhook for client '${paymentClientId}' as it's not handled by this instance.`);
+      console.log(`Ignoring webhook for client: ${paymentClientId}`);
       return res.status(200).json({ success: true, message: 'Webhook ignored for other client' });
     }
 
@@ -45,25 +52,25 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         const sessionId = payment.notes?.sessionId;
 
         if (!sessionId) {
-          console.warn(`Webhook for payment ${payment.id} received, but no sessionId found in notes.`);
+          console.log(`No sessionId found for payment: ${payment.id}`);
           return res.status(400).json({ success: false, message: 'Session ID not found in payment notes' });
         }
         
         const session = await PhotoSession.findOne({ sessionId: sessionId });
 
         if (!session) {
-          console.warn(`Webhook for payment ${payment.id} received, but no session found for sessionId ${sessionId}.`);
+          console.log(`No session found for sessionId: ${sessionId}`);
           return res.status(404).json({ success: false, message: 'Session not found for Session ID' });
         }
         
         if (session.paymentStatus === 'paid') {
-          console.log(`Payment for session ${sessionId} already processed. Ignoring event.`);
+          console.log(`Payment already processed for session: ${sessionId}`);
           return res.status(200).json({ success: true, message: 'Already processed' });
         }
         
         session.paymentStatus = 'paid';
         await session.save();
-        console.log(`✅ Session ${session.sessionId} marked as paid from payment.captured event.`);
+        console.log(`Session marked as paid: ${session.sessionId}`);
 
         res.status(200).json({ success: true, message: 'Webhook acknowledged. Processing transfer in background.' });
         
@@ -79,12 +86,12 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         const session = await PhotoSession.findOne({ qrcodeId: qrId });
 
         if (!session) {
-          console.warn(`Webhook for qr_id ${qrId} received, but no session found.`);
+          console.log(`No session found for qr_id: ${qrId}`);
           return res.status(404).json({ success: false, message: 'Session not found for QR ID' });
         }
 
         if (session.paymentStatus === 'paid') {
-          console.log(`Payment for session ${session.sessionId} already processed. Ignoring qr_code.closed event.`);
+          console.log(`Payment already processed for session: ${session.sessionId}`);
           return res.status(200).json({ success: true, message: 'Already processed' });
         }
         
@@ -93,10 +100,10 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
           eventStatus = 'paid';
           session.paymentStatus = 'paid';
           await session.save();
-          console.log(`✅ Session ${session.sessionId} marked as paid.`);
+          console.log(`Session marked as paid: ${session.sessionId}`);
         } else if (closeReason === 'on_demand') {
           eventStatus = 'on_demand';
-          console.log(`📸 QR Code closed on-demand for session ${session.sessionId}.`);
+          console.log(`QR Code closed on-demand for session: ${session.sessionId}`);
         }
 
         // Acknowledge the webhook

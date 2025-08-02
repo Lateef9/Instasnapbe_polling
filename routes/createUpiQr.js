@@ -19,7 +19,7 @@ router.post('/create-upi-qr', async (req, res) => {
       const priceMaps = {
         client1: { 2: 250, 4: 350, 6: 400 },
         // client1: { 2: 3, 4: 4, 6: 5 }, testing prices
-        InstaSnap_Kiosk: { 2: 199, 4: 249, 6: 299},
+        InstaSnap_Kioskk: { 2: 1, 4: 2, 6: 3},
         default: { 2: 2, 4: 3, 6: 4 }
       };
 
@@ -37,10 +37,11 @@ router.post('/create-upi-qr', async (req, res) => {
         notes: {
           sessionId: sessionId,
           clientId: clientId,
+          instanceUrl: process.env.BACKEND_INSTANCE_URL,
         },
       });
   
-      console.log(`Payment QR Created: ID=${qrCode.id} for session ${sessionId}`);
+      console.log(`QR Created: ${qrCode.id}, session: ${sessionId}`);
 
       await PhotoSession.findOneAndUpdate(
         { sessionId, clientId: req.client.clientId },
