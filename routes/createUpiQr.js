@@ -17,10 +17,10 @@ router.post('/create-upi-qr', async (req, res) => {
       const minCloseBy = now + (3 * 60);
   
       const priceMaps = {
-        client1: { 2: 250, 4: 350, 6: 400 },
+        // client1: { 2: 250, 4: 350, 6: 400 },
         // client1: { 2: 3, 4: 4, 6: 5 }, testing prices
-        InstaSnap_Kioskk: { 2: 1, 4: 2, 6: 3},
-        default: { 2: 2, 4: 3, 6: 4 }
+        InstaSnap_Kioskk: { 2: 199, 4: 249, 6: 299},
+        default: { 2: 199, 4: 249, 6: 299 }
       };
 
       const priceMap = priceMaps[clientId] || priceMaps.default;
