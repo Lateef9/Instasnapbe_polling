@@ -28,8 +28,8 @@ const PhotoSessionSchema = new mongoose.Schema({
     },
     paymentStatus: {
         type: String,
-        enum: ["pending", "paid", "expired", "QRnotCreated"],
-        default: "QRnotCreated"
+        enum: ['pending', 'paid', 'expired','QRnotCreated','user_cancelled'],
+        default: 'QRnotCreated'
     },
     printerJobId: {
         type: String,

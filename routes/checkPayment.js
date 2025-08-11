@@ -21,7 +21,7 @@ router.post('/check-payment', async (req, res) => {
 
         // Simply return the status from the database record. 
         // The webhook is responsible for updating this status.
-        console.log(`Polling session: ${sessionId}, status: ${session.paymentStatus}`);
+        console.log(`[${sessionId}] -  Polling session & status: ${session.paymentStatus}`);
         return res.json({ status: session.paymentStatus });
   
     } catch (error) {

@@ -12,6 +12,7 @@ router.post('/create-session', async (req, res) => {
         clientId: req.client.clientId,
       });
       await photoSession.save();
+      console.log(`[${sessionId}] - Session saved to DB for client: ${req.client.clientId}`);
       res.json({ sessionId });
     } catch (error) {
       console.error("Error creating session:", error);

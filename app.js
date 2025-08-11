@@ -48,4 +48,4 @@ app.use('/api', authenticateClient, closeQrRouter);
 const PORT = process.env.PORT || 3000;
 httpServer.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
 
-export default app;
+// export default app;

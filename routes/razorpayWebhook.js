@@ -38,7 +38,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       return res.status(200).json({ success: true, message: 'Webhook ignored for other instance' });
     }
 
-    const allowedClients = ['InstaSnap_Kioskk']; 
+    const allowedClients = ['client2','client4']; 
     const paymentClientId = payload.payment?.entity?.notes?.clientId;
 
     if (event === 'payment.captured' && paymentClientId && !allowedClients.includes(paymentClientId)) {
@@ -70,7 +70,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
         
         session.paymentStatus = 'paid';
         await session.save();
-        console.log(`Session marked as paid: ${session.sessionId}`);
+        console.log(`[${session.sessionId}] - Session marked as paid from webhook`);
 
         res.status(200).json({ success: true, message: 'Webhook acknowledged. Processing transfer in background.' });
         
