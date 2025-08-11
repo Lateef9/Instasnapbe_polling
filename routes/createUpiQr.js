@@ -20,9 +20,9 @@ router.post('/create-upi-qr', async (req, res) => {
         // client1: { 2: 250, 4: 350, 6: 400 },
         // client1: { 2: 3, 4: 4, 6: 5 }, //testing prices
         client2: { 2: 1, 4: 2, 6: 3 },
-        // InstaSnap_Kioskk: { 2: 199, 4: 299, 6: 399},
-        // default: { 2: 199, 4: 299, 6: 399 }
-        client4: { 2: 1, 4: 2, 6:3 }
+        client4: { 2: 1, 4: 2, 6:3 },
+        InstaSnap_Kioskk: { 2: 199, 4: 299, 6: 399},
+        default: { 2: 199, 4: 299, 6: 399 }        
       };
 
       const priceMap = priceMaps[clientId] || priceMaps.default;

@@ -38,7 +38,7 @@ router.post('/webhook', express.raw({ type: 'application/json' }), async (req, r
       return res.status(200).json({ success: true, message: 'Webhook ignored for other instance' });
     }
 
-    const allowedClients = ['client2','client4']; 
+    const allowedClients = ['client2','client4','InstaSnap_Kioskk','default']; 
     const paymentClientId = payload.payment?.entity?.notes?.clientId;
 
     if (event === 'payment.captured' && paymentClientId && !allowedClients.includes(paymentClientId)) {
